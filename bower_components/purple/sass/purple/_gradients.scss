@@ -1,0 +1,28 @@
+//
+// Gradients
+// --------------------------------------------------
+
+$gradient-primary-1: radial-gradient(0% bottom, rgba(118, 72, 160, 0.7) 0%, rgba(118, 72, 160, 0) 60%);
+$gradient-primary-2: radial-gradient(90% bottom, rgba(82, 63, 140, 1) 0%, rgba(82, 63, 140, 0) 40%);
+$gradient-primary-3: radial-gradient(50% top, rgba(84, 90, 182, 0.6) 0%, rgba(84, 90, 182, 0) 75%);
+$gradient-primary-4: radial-gradient(right top, rgba(121, 74, 162, 1) 0%, rgba(121, 74 ,162, 0) 57%);
+
+.gradient-primary {
+  background-color: #3B2F63;
+  @include background-image(
+    $gradient-primary-1,
+    $gradient-primary-2,
+    $gradient-primary-3,
+    $gradient-primary-4
+  );
+  background-size: auto, auto, 100% 1000px, 100% 1000px;
+  background-repeat: no-repeat;
+}
+
+.gradient-primary-short {
+  @include background-image(
+    $gradient-primary-3,
+    $gradient-primary-4
+  );
+  background-size: 100% 1000px;
+}

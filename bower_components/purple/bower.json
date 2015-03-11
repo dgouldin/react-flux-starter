@@ -1,0 +1,25 @@
+{
+  "name": "purple",
+  "version": "0.4.14",
+  "authors": [
+    "Max Schoening <mail@maximilian.io>"
+  ],
+  "description": "A UI kit for Heroku's web interfaces",
+  "private": true,
+  "main": [
+    "js/purple.js",
+    "sass/purple.scss"
+  ],
+  "ignore": [
+    "**/.*",
+    "Gruntfile.js",
+    "package.json",
+    "docs",
+    "node_modules"
+  ],
+  "dependencies": {
+    "bootstrap-sass-official": "~3.1.1",
+    "bourbon": "~3.2.0",
+    "jquery": ">= 1.9.0"
+  }
+}

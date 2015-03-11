@@ -1,0 +1,19 @@
+{
+  "name": "react-flux-starter",
+  "version": "0.0.0",
+  "homepage": "https://github.com/heroku/react-flux-starter",
+  "authors": [
+    "Howard Burrows <howard@heroku.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "purple": "git@github.com:heroku/purple.git#~0.4.14"
+  }
+}

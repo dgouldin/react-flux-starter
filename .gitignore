@@ -1,0 +1,19 @@
+# Connect files
+.env
+
+#Mr Developer
+.DS_Store
+
+#Emacs cruft
+*~
+
+# node modules
+node_modules/
+
+# sass cache files
+.sass-cache
+
+npm-debug.log
+
+public/javascripts/bundle/
+public/stylesheets/
