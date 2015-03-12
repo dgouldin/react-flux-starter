@@ -1,7 +1,4 @@
-# Connect files
-.env
-
-#Mr Developer
+# Mr Developer
 .DS_Store
 
 #Emacs cruft
@@ -13,7 +10,10 @@ node_modules/
 # sass cache files
 .sass-cache
 
+# npm debug log
 npm-debug.log
 
+# app specific files that are generated as part of the asset pipeline
 public/javascripts/bundles/
+public/javascripts/vendor/bootstrap.js
 public/stylesheets/
