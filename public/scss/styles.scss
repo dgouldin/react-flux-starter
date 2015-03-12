@@ -1,8 +1,10 @@
-// Define any overrides of bootstrap/purple variable here
-
+// Define any overrides of bootstrap or purple variables here
+// before importing purple.scss
+//
 $icon-font-path: "../fonts/bootstrap/";
 
+// purple include bootstrap and bourbon
 @import 'bower_components/purple/sass/purple.scss';
 
-
 // place your app CSS here or in a separate .scss file
+
