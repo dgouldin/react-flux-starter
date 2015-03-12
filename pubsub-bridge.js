@@ -44,7 +44,7 @@ module.exports = function (server) {
   //var redisClient = redis.createClient(parsedUrl.port || 6379, parsedUrl.hostname || 'localhost');
 
   function unsubscribe(socket, channel) {
-    //console.log('unsubscribing from ' + channel);
+    console.log('unsubscribing from ' + channel);
     // Get listeners for channel.  Remove socket for list.  If
     // channel listeners becomes empty then unsubscribe from redis
     // channel and remove channel from internal subsciptions hash
@@ -99,6 +99,8 @@ module.exports = function (server) {
 
   io.on('connection', function(socket) {
 
+    var interval;
+
     console.log('socket connection established');
 
     socket.on('disconnect', function() {
@@ -118,12 +120,46 @@ module.exports = function (server) {
 
     socket.on('subscribe', function (channel, withResponse) {
 
+      /*
+      * ??? ONLY FOR EXAMPLE to simulate subscription to /api/servertime
+      * To use redis and remove this HARDCODED /api/servertime example
+      * remove the following lines through the return
+      *
+      */
+
+      console.log('initiate subscription to %s', channel);
+
+      // Get or create listeners list for channel
+      var channelListeners = _subscriptions[channel] || (_subscriptions[channel] = []);
+
+      // Only add client socket once to channel listeners
+      if (_.indexOf(channelListeners, socket) !== -1) {
+        console.error('Attempt to subscribe to channel already subscribed to - channel: %s, socket: %j', channel, socket);
+        return;
+      }
+      channelListeners.push(socket);
+
+      socket.emit('set', {channel: channel, data: JSON.stringify(new Date().toString())});
+      console.log('refreshing on subscribe: ' + channel);
+      console.log('subscribed to ' + channel);
+
+      interval = setInterval(function () {
+        socket.emit('set', {channel: channel, data: JSON.stringify(new Date().toString())});
+      }, 1000);
+
+      return;
+
+      /*
+      * ??? FOR REDIS below only pertains to redis pubsub bridge.  If you use the redis
+      * remove everything above and use the impl below
+      */
+
       if (!socket.accessToken) {
         console.log('cannot subscribe to a channel without an access token');
         return;
       }
 
-      //console.log('initiate subscription to %s', channel);
+      console.log('initiate subscription to %s', channel);
 
       var options = {
         hostname: 'localhost',
@@ -142,13 +178,13 @@ module.exports = function (server) {
         successHandler = function(body) {
           socket.emit('set', {channel: channel, data: body});
           console.log('refreshing on subscribe: ' + channel);
-          //console.log('subscribed to ' + channel);
+          console.log('subscribed to ' + channel);
         };
       }
       else {
         options.method = 'HEAD';
         successHandler = function() {
-          //console.log('subscribed to ' + channel);
+          console.log('subscribed to ' + channel);
         };
       }
 
@@ -192,6 +228,12 @@ module.exports = function (server) {
 
     socket.on('unsubscribe', function (channel) {
       unsubscribe(socket, channel);
+
+      /*
+      * ??? ONLY FOR EXAMPLE to simulate subscription to /api/servertime
+      *remove if using redis
+      */
+      clearInterval(interval);
     });
 
   });

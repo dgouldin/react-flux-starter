@@ -29,6 +29,7 @@ module.exports = keyMirror({
   ITEM_DELETE: null,
 
   // servertime actions
-  SERVERTIME_GET: null
+  SERVERTIME_GET: null,
+  SERVERTIME_PUT: null
 
 });

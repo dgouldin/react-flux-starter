@@ -5,14 +5,14 @@ var _ = require('lodash');
 var BaseStore = require('./base');
 
 var kActions = require('../constants/actions'),
-    kStates = require('../constants/states'),
     ServerActions = require('../actions/server-time');
 
 var _actions = _.zipObject([
-  [kActions.SERVERTIME_GET, 'handleGet']
+  [kActions.SERVERTIME_GET, 'handleSet'],
+  [kActions.SERVERTIME_PUT, 'handleSet']
 ]);
 
-class EntryStore extends BaseStore {
+class ServerTimeStore extends BaseStore {
 
   constructor(dispatcher) {
     super(dispatcher);
@@ -24,7 +24,7 @@ class EntryStore extends BaseStore {
   }
 
   _load() {
-    ServerActions.getAll();
+    ServerActions.getTime();
     return undefined;
   }
 
@@ -43,23 +43,12 @@ class EntryStore extends BaseStore {
   *
   */
 
-  handleSetAll(payload) {
-    console.debug(`${this.getStoreName()}:handleSetAll; state=${payload.state}`);
-
-    switch(payload.state) {
-      case kStates.LOADING:
-        this.inflight = true;
-        break;
-      case kStates.SYNCED:
-        this.inflight = false;
-        break;
-    }
-
-    this._serverTime = this.makeStatefulEntry(payload.state, payload.data);
-
+  handleSet(payload) {
+    console.debug(`${this.getStoreName()}:handleSet state=${payload.syncState}`);
+    this._serverTime = this.makeStatefulEntry(payload.syncState, payload.data);
     this.emitChange();
   }
 
 }
 
-module.exports = EntryStore;
+module.exports = ServerTimeStore;

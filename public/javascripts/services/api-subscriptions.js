@@ -34,7 +34,7 @@ class SubscriptionService extends EventEmitter {
     this.emit('disconnect');
   }
 
-  handleReconnect(attempts){
+  handleReconnect(){
     //console.debug('reconnect; attempts: ' + attempts);
     _.each(this._events, function(fn, channel){
       // on reconnect remove all API channel listeners

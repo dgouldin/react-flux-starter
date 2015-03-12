@@ -15,7 +15,7 @@ var _actions = _.zipObject([
   [kActions.ITEM_DELETE, 'handleEntryDelete']
 ]);
 
-class EntryStore extends BaseStore {
+class ItemsStore extends BaseStore {
 
   constructor(dispatcher) {
     super(dispatcher);
@@ -51,15 +51,14 @@ class EntryStore extends BaseStore {
   */
 
   handleSetAll(payload) {
-    console.debug(`${this.getStoreName()}:handleSetAll; state=${payload.state}`);
+    console.debug(`${this.getStoreName()}:handleSetAll; state=${payload.syncState}`);
 
-    switch(payload.state) {
+    switch(payload.syncState) {
       case kStates.LOADING:
         this.inflight = true;
         break;
       case kStates.SYNCED:
-        this._items = {};
-        _.each(payload.data, item => this.items[item.id] = this.makeStatefulEntry(payload.state, item));
+        this._items = _.each(payload.data, item => this.makeStatefulEntry(payload.syncState, item));
         this.inflight = false;
         break;
     }
@@ -68,14 +67,14 @@ class EntryStore extends BaseStore {
   }
 
   handleEntryCreate(payload) {
-    console.debug(`${this.getStoreName()}:handleEntryCreate; state=${payload.state}`);
+    console.debug(`${this.getStoreName()}:handleEntryCreate; state=${payload.syncState}`);
 
     var state = this._items || {},
         newEntry, existingEntry;
 
-    switch(payload.state) {
+    switch(payload.syncState) {
       case kStates.NEW:
-        state[payload.data.cid] = this.makeStatefulEntry(payload.state, payload.data);
+        state[payload.data.cid] = this.makeStatefulEntry(payload.syncState, payload.data);
         break;
       case kStates.SYNCED:
         newEntry = payload.data;
@@ -85,14 +84,14 @@ class EntryStore extends BaseStore {
 
           console.debug(`${this.getStoreName()}:handleEntryCreate; converting client-id to server-id`);
 
-          existingEntry = this.updateStatefulEntry(existingEntry, payload.state, newEntry);
+          existingEntry = this.updateStatefulEntry(existingEntry, payload.syncState, newEntry);
 
           // remove the "new" entry which is being replaced by its permanent one
           delete state[existingEntry.data.cid];
           state[existingEntry.data.id] = existingEntry;
         }
         else {
-          state[newEntry.id] = this.makeStatefulEntry(payload.state, newEntry);
+          state[newEntry.id] = this.makeStatefulEntry(payload.syncState, newEntry);
         }
         break;
     }
@@ -101,12 +100,12 @@ class EntryStore extends BaseStore {
   }
 
   handleEntryUpdate(payload) {
-    console.debug(`${this.getStoreName()}:handleEntryUpdate; state=${payload.state}`);
+    console.debug(`${this.getStoreName()}:handleEntryUpdate; state=${payload.syncState}`);
 
     var newEntry = payload.data,
         existingEntry;
 
-    switch(payload.state) {
+    switch(payload.syncState) {
       case kStates.SAVING:
         existingEntry = this._items[newEntry.id];
         if (existingEntry) {
@@ -125,14 +124,14 @@ class EntryStore extends BaseStore {
   }
 
   handleEntryDelete(payload) {
-    console.debug(`${this.getStoreName()}:handleEntryDelete; state=${payload.state}`);
+    console.debug(`${this.getStoreName()}:handleEntryDelete; state=${payload.syncState}`);
 
     var existingEntry = this._items[payload.data.id];
 
     if (existingEntry) {
-      switch(payload.state) {
+      switch(payload.syncState) {
         case kStates.DELETING:
-          existingEntry = this.updateStatefulEntry(existingEntry, payload.state);
+          existingEntry = this.updateStatefulEntry(existingEntry, payload.syncState);
           break;
         case kStates.SYNCED:
           delete this._items[payload.data.id];
@@ -145,4 +144,4 @@ class EntryStore extends BaseStore {
 
 }
 
-module.exports = EntryStore;
+module.exports = ItemsStore;
