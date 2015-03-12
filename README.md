@@ -7,6 +7,8 @@ Uses Purple and SASS for CSS; Browserify for Javascript bundling, and Gulp for m
 To use:
 
 Clone this repository the execute the following commands:
+
+
 1. `npm install`
 1. `./node_modules/gulp/bin/gulp.js asset-refresh`
 1. `./node_modules/gulp/bin/gulp.js build`
@@ -14,6 +16,7 @@ Clone this repository the execute the following commands:
 1. Goto http://localhost:3000 in your browser
 
 If you want to develop further and make modifications:
+
 
 1. In one console window run `./node_modules/gulp/bin/gulp.js`.  This will run Gulp in "watch" mode and automatially rebuild your frontend assets on change.
 1. In a second console window run `npm start`.  If you're going to modify the Express code use nodemon (`nodemon ./bin/www`) which will automatically reload Express after you make a change.
