@@ -2,7 +2,7 @@
 
 An application template for a single page webapp backed by Express that uses React with a Flux architecture with support for Actions, Stores, message dispatching, and real-time updates.
 
-Uses Purple and SASS for CSS; Browserify for Javascript bundling, and Gulp for managing all the front-end asset build and packaging.
+Uses Purple and SASS for CSS, Browserify for Javascript bundling, ES6 syntax via Traceur, and Gulp for managing all the front-end asset build and packaging.
 
 To use:
 
