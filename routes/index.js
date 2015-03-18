@@ -16,22 +16,6 @@ function indexRouteHandler (req, res) {
   });
 }
 
-router.get('/api/users/me', function (req, res) {
-  res.json(req['heroku-bouncer']);
-});
-
-router.get('/api/items', function (req, res) {
-  res.json([
-    {id: 1, first: 'Howard', last: 'Burrows'},
-    {id: 2, first: 'David', last: 'Gouldin'},
-    {id: 3, first: 'Scott', last: 'Persinger'}
-  ]);
-});
-
-router.get('/api/servertime', function (req, res) {
-  res.json(new Date().toString());
-});
-
 /* GET home page. */
 router.get('/*', indexRouteHandler);
 

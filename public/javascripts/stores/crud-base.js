@@ -78,7 +78,7 @@ class CRUDStore extends BaseStore {
    *
    */
   _onGetAll(payload) {
-    console.debug(`${this.getStoreName()}:_onGetAll; state=${payload.syncState}`);
+    console.debug(`${this.getStoreName()}:_onGetAll; state=${payload.syncState}`, payload);
 
     switch(payload.syncState) {
       case kStates.LOADING:
@@ -104,7 +104,7 @@ class CRUDStore extends BaseStore {
   }
 
   _onGetOne(payload) {
-    console.debug(`${this.getStoreName()}:_onGetAll; state=${payload.syncState}`);
+    console.debug(`${this.getStoreName()}:_onGetAll; state=${payload.syncState}`, payload);
 
     var exists;
 
@@ -129,22 +129,29 @@ class CRUDStore extends BaseStore {
   }
 
   _onPost(payload) {
-    console.debug(`${this.getStoreName()}:_onPost; state=${payload.syncState}`);
+    console.debug(`${this.getStoreName()}:_onPost; state=${payload.syncState}`, payload);
 
     if (!this._resources) { this._resources = {}; }
 
-    this._resources[payload.data.id] = this.makeStatefulEntry(payload.syncState, payload.data);
+    var newEntry;
+    if (payload.data[0]) {
+      // HACK: account for POST payloads from list endpoints
+      newEntry = payload.data[0];
+    } else {
+      newEntry = payload.data;
+    }
+    this._resources[newEntry.id] = this.makeStatefulEntry(payload.syncState, newEntry);
 
     // subscribe to resource only on SYNC
     if (payload.syncState === kStates.SYNCED) {
-      this._actions.subscribeResources(payload.data.id);
+      this._actions.subscribeResources(newEntry.id);
     }
 
     this.emitChange();
   }
 
   _onPut(payload) {
-    console.debug(`${this.getStoreName()}:_onPut; state=${payload.syncState}`);
+    console.debug(`${this.getStoreName()}:_onPut; state=${payload.syncState}`, payload);
 
     if (!this._resources) { this._resources = {}; }
 
@@ -155,13 +162,14 @@ class CRUDStore extends BaseStore {
       return;
     }
 
-    this._resources[payload.data.id] = this.updateStatefulEntry(existingEntry, payload.syncState, payload.data);
+    var newEntry = payload.data;
+    this._resources[newEntry.id] = this.updateStatefulEntry(existingEntry, payload.syncState, newEntry);
 
     this.emitChange();
   }
 
   _onDelete(payload) {
-    console.debug(`${this.getStoreName()}:_onDelete; state=${payload.syncState}`);
+    console.debug(`${this.getStoreName()}:_onDelete; state=${payload.syncState}`, payload);
 
     if (!this._resources) { this._resources = {}; }
 

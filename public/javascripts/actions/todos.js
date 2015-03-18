@@ -7,32 +7,31 @@ var CRUDBase = require('./crud-base');
  * to create JSON payload that the endpoint expects.
  */
 
-class ItemActions extends CRUDBase {
+class TodoActions extends CRUDBase {
 
   // specify the baseURL and action object identifier for dispatches
   constructor() {
-    super('/api/items', 'ITEM');
+    super('/api/todos', 'TODO');
   }
 
-  // define "create" json payload appropriate for resource
-  post (first, last) {
+  // define create json data appropriate for resource
+  post (text) {
     var data = {
-      first: first,
-      last: last
+      text: text
     };
     super.post(data);
   }
 
-  // define "update" json payload appropriate for resource
-  put (id, first, last) {
+  // define update json data appropriate for resource
+  put (id, text, done) {
     var data = {
       id: id,
-      first: first,
-      last: last
+      text: text,
+      done: done
     };
     super.put(id, data);
   }
 
 }
 
-module.exports = new ItemActions();
+module.exports = new TodoActions();

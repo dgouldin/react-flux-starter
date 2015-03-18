@@ -141,19 +141,11 @@ class CRUDBase extends BaseAction {
     *
     */
   _onPostEvent(event, channel, data) {
-    this.dispatchServerAction(this._actionForMethod('POST'), kStates.SYNCED, {
-      subscription: this._normalizeChannelName(channel),
-      id: data.id,
-      data: data
-    });
+    this.dispatchServerAction(this._actionForMethod('POST'), kStates.SYNCED, data);
   }
 
   _onPutEvent(event, channel, data) {
-    this.dispatchServerAction(this._actionForMethod('PUT'), kStates.SYNCED, {
-      subscription: this._normalizeChannelName(channel),
-      id: data.id,
-      data: data
-    });
+    this.dispatchServerAction(this._actionForMethod('PUT'), kStates.SYNCED, data);
   }
 
   _onDeleteEvent(event, channel) {
@@ -161,7 +153,6 @@ class CRUDBase extends BaseAction {
         id = re.exec(channel)[1];
 
     this.dispatchServerAction(this._actionForMethod('DELETE'), kStates.SYNCED, {
-      subscription: this._normalizeChannelName(channel),
       id: id
     });
   }

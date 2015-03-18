@@ -6,8 +6,8 @@ var keyMirror = require('react/lib/keyMirror');
  * Action type constants. Should follow the format:
  * <OBJECT ALIAS>_<VERB>
  *
- * For example, an action for fetching a specific "Item" object:
- * ITEM_GET
+ * For example, an action for fetching a specific "Todo" object:
+ * TODO_GET
  *
  * If you're using the CRUD Action and Store base classes the verbs must be the following:
  * GETALL                   <- Retrieving a list of objects. (e.g. GET /items)
@@ -23,11 +23,11 @@ var keyMirror = require('react/lib/keyMirror');
 module.exports = keyMirror({
 
   // item actions
-  ITEM_GETALL: null,
-  ITEM_GETONE: null,
-  ITEM_POST: null,
-  ITEM_PUT: null,
-  ITEM_DELETE: null,
+  TODO_GETALL: null,
+  TODO_GETONE: null,
+  TODO_POST: null,
+  TODO_PUT: null,
+  TODO_DELETE: null,
 
   // servertime actions
   SERVERTIME_GET: null,

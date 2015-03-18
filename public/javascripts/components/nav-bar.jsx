@@ -23,8 +23,7 @@ module.exports = React.createClass({
 
           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul className="nav navbar-nav">
-              <li className={this.isActive('items') ? "active" : ''}><Link to="items">Items</Link></li>
-              <li className={this.isActive('server-time') ? "active" : ''}><Link to="server-time">Server-Time</Link></li>
+              <li className={this.isActive('todos') ? "active" : ''}><Link to="todos">Todos</Link></li>
             </ul>
           </div>
         </div>

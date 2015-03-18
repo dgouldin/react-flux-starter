@@ -11,9 +11,7 @@ module.exports = (
 
   <Route name="root" path="/" handler={require('./components/app.jsx')}>
 
-    <DefaultRoute name="items" path="/" handler={require('./components/items.jsx')} />
-
-    <Route name="server-time" handler={require('./components/server-time.jsx')} />
+    <DefaultRoute name="todos" path="/" handler={require('./components/todos.jsx')} />
 
     <NotFoundRoute handler={require('./components/route-not-found.jsx')} />
 

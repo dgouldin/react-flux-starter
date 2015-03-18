@@ -4,10 +4,9 @@ var _ = require('lodash');
 
 var url = require('url'),
     http = require('http'),
-    //fernet = require('fernet'),
+    fernet = require('fernet'),
     socketio = require('socket.io');
 
-/*
 var _fernet = new fernet({ttl: 0});
 
 if (!process.env.FERNET_KEY) {
@@ -25,23 +24,20 @@ function fernetDecode(ciphertext) {
   });
   return token.decode();
 }
-*/
 
 // auth: parsedUrl.auth ? parsedUrl.auth.split(':')[1] : null
 // redis://:@localhost:6379/
 
-/*
 var parsedUrl = url.parse(process.env.REDIS_URL || process.env.REDISGREEN_URL);
 
 var redis = require("redis");
-*/
 
 var _subscriptions = {};
 
 module.exports = function (server) {
 
   var io = socketio(server);
-  //var redisClient = redis.createClient(parsedUrl.port || 6379, parsedUrl.hostname || 'localhost');
+  var redisClient = redis.createClient(parsedUrl.port || 6379, parsedUrl.hostname || 'localhost');
 
   function unsubscribe(socket, channel) {
     console.log('unsubscribing from ' + channel);
@@ -52,13 +48,12 @@ module.exports = function (server) {
     if (channelListeners) {
       channelListeners.splice(_.indexOf(channelListeners, socket), 1);
       if (channelListeners.length === 0) {
-        //redisClient.unsubscribe(channel);
+        redisClient.unsubscribe(channel);
         delete _subscriptions[channel];
       }
     }
   }
 
-  /*
   redisClient.auth(parsedUrl.auth ? parsedUrl.auth.split(':')[1] : null, function () {
     console.log('redisClient.auth callback');
   });
@@ -88,19 +83,16 @@ module.exports = function (server) {
   });
 
   redisClient.on("message", function (channel, message) {
-    //message = fernetDecode(message);
+    message = fernetDecode(message);
+    console.log('REDIS MESSAGE', message);
     var channelListeners = _subscriptions[channel] || [];
     if (channelListeners.length === 0) { console.warn('no listeners for channel: ' + channel); }
     _.each(channelListeners, function (socket) {
       socket.emit('set', {channel: channel, data: message});
     });
   });
-  */
 
   io.on('connection', function(socket) {
-
-    var interval;
-
     console.log('socket connection established');
 
     socket.on('disconnect', function() {
@@ -119,18 +111,6 @@ module.exports = function (server) {
     });
 
     socket.on('subscribe', function (channel, withResponse) {
-
-      /*
-      * ??? ONLY FOR EXAMPLE to simulate subscription to /api/servertime
-      * To use redis and remove this HARDCODED /api/servertime example
-      * remove the following lines through the return
-      *
-      */
-
-      if (channel !== 'PUT /api/servertime') {
-        return;
-      }
-
       console.log('initiate subscription to %s', channel);
 
       // Get or create listeners list for channel
@@ -141,32 +121,16 @@ module.exports = function (server) {
         console.error('Attempt to subscribe to channel already subscribed to - channel: %s, socket: %j', channel, socket);
         return;
       }
-      channelListeners.push(socket);
 
-      socket.emit('set', {channel: channel, data: JSON.stringify(new Date().toString())});
-      console.log('refreshing on subscribe: ' + channel);
-      console.log('subscribed to ' + channel);
-
-      interval = setInterval(function () {
-        socket.emit('set', {channel: channel, data: JSON.stringify(new Date().toString())});
-      }, 1000);
-
-      return;
-
-      /*
-      * ??? FOR REDIS below only pertains to redis pubsub bridge.  If you use the redis
-      * remove everything above and use the impl below
-      */
-
-      if (!socket.accessToken) {
+      /*if (!socket.accessToken) {
         console.log('cannot subscribe to a channel without an access token');
         return;
-      }
+      }*/
 
       console.log('initiate subscription to %s', channel);
 
       var options = {
-        hostname: 'localhost',
+        hostname: '127.0.0.1',
         port: process.env.DJANGO_PORT,
         path: channel.replace(/^(GET|PUT|POST|DELETE)\s/, ''),
         headers: {
@@ -199,7 +163,7 @@ module.exports = function (server) {
           var channelListeners = _subscriptions[channel] || (_subscriptions[channel] = []);
           // If no listeners exist, subscribe to redis channel
           if (channelListeners.length === 0) {
-            //redisClient.subscribe(channel);
+            redisClient.subscribe(channel);
           }
           // Only add client socket once to channel listeners
           if (_.indexOf(channelListeners, socket) !== -1) {
@@ -231,19 +195,7 @@ module.exports = function (server) {
     });
 
     socket.on('unsubscribe', function (channel) {
-
-      // ??? remove if using redis
-      if (channel !== 'PUT /api/servertime') {
-        return;
-      }
-
       unsubscribe(socket, channel);
-
-      /*
-      * ??? ONLY FOR EXAMPLE to simulate subscription to /api/servertime
-      * remove if using redis
-      */
-      clearInterval(interval);
     });
 
   });

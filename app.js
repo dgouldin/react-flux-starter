@@ -3,15 +3,22 @@
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
+var httpProxy = require('http-proxy');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var api = require('./routes/api');
 var routes = require('./routes/index');
 
+var apiProxy = httpProxy.createProxyServer();
 var app = express();
 
+app.all("/api/*", function(req, res){
+  apiProxy.web(req, res, {target: 'http://127.0.0.1:' + process.env.DJANGO_PORT});
+});
+app.all("/static/*", function(req, res){
+  apiProxy.web(req, res, {target: 'http://127.0.0.1:' + process.env.DJANGO_PORT});
+});
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -23,7 +30,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api', api);
 app.use('/', routes);
 
 // catch 404 and forward to error handler

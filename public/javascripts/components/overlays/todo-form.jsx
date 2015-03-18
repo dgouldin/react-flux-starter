@@ -11,8 +11,7 @@ module.exports = React.createClass({
 
   getInitialState: function () {
     return {
-      firstName: this.props.firstName || '',
-      lastName: this.props.lastName || ''
+      text: this.props.text || ''
     };
   },
 
@@ -23,17 +22,13 @@ module.exports = React.createClass({
           <div className="modal-content">
             <div className="modal-header">
               <button type="button" className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
-              <h4 className="modal-title">Add New Item</h4>
+              <h4 className="modal-title">Add New Todo</h4>
             </div>
             <div className="modal-body">
               <form>
                 <div className="form-group">
-                  <label htmlFor="firstname">First Name</label>
-                  <input ref="firstName" type="text" className="form-control" id="firstname" placeholder="First name" valueLink={this.linkState('firstName')} />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="lastname">Last Name</label>
-                  <input type="text" className="form-control" id="lastname" placeholder="Last name" valueLink={this.linkState('lastName')} />
+                  <label htmlFor="text">Text</label>
+                  <input ref="text" type="text" className="form-control" id="text" placeholder="Text" valueLink={this.linkState('text')} />
                 </div>
               </form>
             </div>
@@ -49,13 +44,13 @@ module.exports = React.createClass({
 
   // uses Bootstrap modal's
   handleModalShown: function() {
-    this.refs.firstName.getDOMNode().focus();
+    this.refs.text.getDOMNode().focus();
   },
 
   handleModalHidden: function() {
     if (this.confirmed) {
       if (this.props.okCallback) {
-        this.props.okCallback(this.state.firstName, this.state.lastName);
+        this.props.okCallback(this.state.text);
       }
     }
     else {
